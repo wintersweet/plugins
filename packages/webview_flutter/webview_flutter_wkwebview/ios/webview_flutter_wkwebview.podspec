@@ -21,4 +21,5 @@ Downloaded by pub (not CocoaPods).
 
   s.platform = :ios, '9.0'
   s.pod_target_xcconfig = { 'DEFINES_MODULE' => 'YES', 'EXCLUDED_ARCHS[sdk=iphonesimulator*]' => 'i386' }
+  s.dependency 'ReactiveObjC'
 end
