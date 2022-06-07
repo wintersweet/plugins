@@ -7,7 +7,7 @@
 #import "FLTWKProgressionDelegate.h"
 #import "FlutterWebView_Test.h"
 #import "JavaScriptChannelHandler.h"
-
+#import "LCWebViewCache.h"
 @implementation FLTWebViewFactory {
   NSObject<FlutterBinaryMessenger> *_messenger;
   FLTCookieManager *_cookieManager;
@@ -66,7 +66,10 @@
 @end
 
 @implementation FLTWebViewController {
-  FLTWKWebView *_webView;
+//  FLTWKWebView *_webView;
+    
+  WKWebView *_webView;
+
   int64_t _viewId;
   FlutterMethodChannel *_channel;
   NSString *_currentUrl;
@@ -102,8 +105,12 @@
     [self updateAutoMediaPlaybackPolicy:args[@"autoMediaPlaybackPolicy"]
                         inConfiguration:configuration];
 
-    _webView = [[FLTWKWebView alloc] initWithFrame:frame configuration:configuration];
-
+//    _webView = [[FLTWKWebView alloc] initWithFrame:frame configuration:configuration];
+      if (!_webView) {
+          _webView = [LCWebViewCache getWKWebViewFromPool];
+          _webView.navigationDelegate = self;
+          _webView.UIDelegate = self;
+      }
     // Background color
     NSNumber *backgroundColorNSNumber = args[@"backgroundColor"];
     if ([backgroundColorNSNumber isKindOfClass:[NSNumber class]]) {
@@ -140,13 +147,25 @@
     if ([initialUrl isKindOfClass:[NSString class]]) {
       NSURL *url = [NSURL URLWithString:initialUrl];
       if (url) {
-        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
-        [_webView loadRequest:request];
+//        NSMutableURLRequest *request = [NSMutableURLRequest requestWithURL:url];
+//        [_webView loadRequest:request];
+          [self  startLoadRequest:initialUrl];
       }
+        
     }
   }
   return self;
 }
+- (void)startLoadRequest:(NSString*)url {
+    url = [url stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]];
+    if ([url hasPrefix:@"http://"] || [url hasPrefix:@"https://"] || [url containsString:@"www"]) {
+        NSURLRequest *request = [[NSURLRequest alloc] initWithURL:[NSURL URLWithString:[url stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceCharacterSet]]]cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:60];
+        [self.webView loadRequest:request];
+    } else {
+        [self.webView loadHTMLString:url baseURL:nil];
+    }
+}
+
 
 - (void)dealloc {
   if (_progressionDelegate != nil) {

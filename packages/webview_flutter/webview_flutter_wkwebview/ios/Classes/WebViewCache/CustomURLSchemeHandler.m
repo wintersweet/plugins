@@ -1,13 +1,6 @@
-//
-//  CustomURLSchemeHandler.m
-//  001---NSURLProtocol
-//
-//  Created by zhangzhiliang on 2020/5/15.
-//  Copyright © 2020 Cooci. All rights reserved.
-//
 
 #import "CustomURLSchemeHandler.h"
-#import <SDWebImageManager.h>
+//#import <SDWebImageManager.h>
 #import <MobileCoreServices/MobileCoreServices.h>
 
 #define  kWKWebViewReuseScheme  @"fuse"
@@ -64,17 +57,17 @@
             [self loadLocalFile:fileName urlSchemeTask:urlSchemeTask];
         } else if (accept.length >= @"image".length && [accept rangeOfString:@"image"].location != NSNotFound) {
          //image
-          NSString *key = [[SDWebImageManager sharedManager] cacheKeyForURL:[NSURL URLWithString:replacedStr]];
+//          NSString *key = [[SDWebImageManager sharedManager] cacheKeyForURL:[NSURL URLWithString:replacedStr]];
             
-          [[SDWebImageManager sharedManager].imageCache queryCacheOperationForKey:key done:^(UIImage * _Nullable image, NSData * _Nullable data, SDImageCacheType cacheType) {
-                        if (image) {
-                            NSData *imgData = UIImageJPEGRepresentation(image, 1);
-                            NSString *mimeType = [self getMIMETypeWithCAPIAtFilePath:fileName] ?: @"image/jpeg";
-                            [self resendRequestWithUrlSchemeTask:urlSchemeTask mimeType:mimeType requestData:imgData];
-                        } else {
-                            [self loadLocalFile:fileName urlSchemeTask:urlSchemeTask];
-                        }
-                    }];
+//          [[SDWebImageManager sharedManager].imageCache queryCacheOperationForKey:key done:^(UIImage * _Nullable image, NSData * _Nullable data, SDImageCacheType cacheType) {
+//                        if (image) {
+//                            NSData *imgData = UIImageJPEGRepresentation(image, 1);
+//                            NSString *mimeType = [self getMIMETypeWithCAPIAtFilePath:fileName] ?: @"image/jpeg";
+//                            [self resendRequestWithUrlSchemeTask:urlSchemeTask mimeType:mimeType requestData:imgData];
+//                        } else {
+//                            [self loadLocalFile:fileName urlSchemeTask:urlSchemeTask];
+//                        }
+//                    }];
             
            
         } else {

@@ -19,7 +19,7 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface FLTWebViewController : NSObject <FlutterPlatformView, WKUIDelegate>
 
-@property(nonatomic) FLTWKWebView *webView;
+@property(nonatomic) WKWebView *webView;
 
 - (instancetype)initWithFrame:(CGRect)frame
                viewIdentifier:(int64_t)viewId
